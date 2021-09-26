@@ -1,0 +1,88 @@
+
+<!--https://betterprogramming.pub/build-a-python-flask-app-to-see-the-places-youve-travelled-fee71e54ec0c-->
+<!--http://127.0.0.1:5000/ -->
+<!-- https://photo-map-1.herokuapp.com/ -->
+
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+<script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"type="text/javascript" charset="utf-8"></script>
+<script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+<script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+</head>
+
+<!--user bar-->
+<h3>
+    Photo Map Application
+</h3>
+
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="icon-bar">
+  <a class="active" href="#"><i class="fa fa-home"></i></a>
+  <a href="#"><i class="fa fa-search"></i></a>
+  <a href="#"><i class="fa fa-envelope"></i></a>
+  <a href="#"><i class="fa fa-globe"></i></a>
+  <a href="#"><i class="fa fa-trash"></i></a>
+</div>
+
+<!--map-->
+<body style='margin: 0'>
+<div style="width: 100%; height: 100%" id="map"></div>
+
+<script>
+function addMarkerToGroup(group, coordinate, html) {
+  var marker = new H.map.Marker(coordinate);
+  marker.setData(html);
+  group.addObject(marker);
+}
+
+function addInfoBubble(map) {
+  var group = new H.map.Group();
+
+  map.addObject(group);
+
+  group.addEventListener('tap', function (evt) {
+    var bubble = new H.ui.InfoBubble(evt.target.getGeometry(), {
+      content: evt.target.getData()
+    });
+    ui.addBubble(bubble);
+  }, false);
+
+  addMarkerToGroup(group, {lat:41.3806533, lng:2.1899274},
+    '<div>Barcelona beach</div>' +
+    '</div><img width=200 height=200 src="https://www.shbarcelona.com/blog/en/wp-content/uploads/2014/09/BarcelonaGatote-810x398.jpg"></img></div>');
+
+  addMarkerToGroup(group, {lat:35.652832, lng:139.839478},
+    '<div> Cat 1 </div>' +
+    '</div><img width=200 height=200 src="https://japan-forward.com/wp-content/uploads/2018/10/Japan-Neko-Dokoro-Calender-009.jpg"></img></div>');
+
+  // TODO add more markers here
+}
+
+var platform = new H.service.Platform({
+        'apikey': 'FuCNrqVYz9mTf98IrkVaTPYsAsN-Ofjgr1PiwtarD2w'
+         });
+
+var defaultLayers = platform.createDefaultLayers();
+
+var map = new H.Map(document.getElementById('map'), defaultLayers.vector.normal.map, {
+  // Barcelona location
+  center: new H.geo.Point(41.3828939, 2.1774322),
+  zoom: 11.5,
+  pixelRatio: window.devicePixelRatio || 1
+});
+
+window.addEventListener('resize', () => map.getViewPort().resize());
+// Behavior implements default interactions for pan/zoom
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+addInfoBubble(map);
+
+</script>
+</body>
+</html>
